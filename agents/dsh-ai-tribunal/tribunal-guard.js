@@ -2,9 +2,12 @@
  * Read-only guard for AI Tribunal role sessions.
  *
  * The one AI Tribunal preset gives every agent the same tool surface. The
- * guard closes the dangerous tools at execution time for the sessions that
- * `tribunal-spawn` marked as Prosecutor, Defense or Judge. The Secretary is
- * never marked, so it keeps fs-write, shell, spawn and presentation tools.
+ * guard closes the dangerous tools at execution time for sessions whose
+ * durable session id carries a Tribunal role marker. The marker is reserved
+ * before the child is created (see `tribunal-spawn`) and survives cold resume
+ * and process restart, so the guard never depends on temporary module state.
+ * The Secretary's session id carries no marker, so it keeps fs-write, shell,
+ * spawn and presentation tools.
  */
 import { isRole } from './role-registry.js'
 
@@ -20,6 +23,7 @@ const DENY = new Set([
   'subagent',
   'subagent_fork',
   'tribunal_spawn',
+  'tribunal_deadline',
   'send_message',
   'interrupt_agent',
   'present',
@@ -30,7 +34,8 @@ export function apply(ctx) {
   ctx.tools.guard((exec) => {
     const agent = exec.agent
     if (agent === undefined) return undefined
-    if (!isRole(agent.session.id)) return undefined
+    const sessionId = agent.session?.id ?? agent.id
+    if (!isRole(sessionId)) return undefined
     if (!DENY.has(exec.name)) return undefined
     return {
       reason: `AI Tribunal role sessions are read-only: "${exec.name}" is not available here. `

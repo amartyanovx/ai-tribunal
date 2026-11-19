@@ -175,6 +175,29 @@ function checkDeadline(schedule, phase, limitSeconds, toleranceSeconds) {
   }
 }
 
+function parseMissing(value) {
+  if (typeof value !== 'string') return []
+  return value
+    .split(/[;\n]+/)
+    .map((item) => item.trim())
+    .filter((item) => item !== '')
+}
+
+function appendMissing(target, items) {
+  if (!Array.isArray(target)) return
+  for (const item of items) {
+    if (!target.includes(item)) target.push(item)
+  }
+}
+
+function timedOutPhases(schedule) {
+  return PHASES.filter((phase) => schedule.phases[phase]?.status === 'timeout')
+}
+
+function missingFlagFromArgs() {
+  return parseMissing(args.missing)
+}
+
 function initStage2() {
   return {
     status: 'none',
@@ -199,6 +222,8 @@ function initStage2() {
     },
     hearing: null,
     verdictStatus: null,
+    missing: [],
+    timedOut: false,
     violations: [],
     verification: null,
   }
@@ -224,6 +249,9 @@ function startSecondHearing(ctx) {
   if (stage2.hearing?.startedAt) return stage2.hearing
   if (stage2.status !== 'approved' || !stage2.approval?.approvedAt) {
     fail('hearing 2 requires an approved V2: run checkpoint -> reconstruct -> approval first')
+  }
+  if (stage2.reconstruction?.status !== 'completed') {
+    fail(`hearing 2 requires a completed reconstruction; current status is "${stage2.reconstruction?.status ?? 'none'}"`)
   }
   if (!stage2.reconstruction?.endedAt) fail('hearing 2 requires a completed reconstruction')
 
@@ -353,6 +381,12 @@ function cmdBegin() {
   const phase = args.phase
   if (!PHASES.includes(phase)) fail(`--phase must be one of: ${PHASES.join(', ')}`)
   const ctx = loadCase(caseDir)
+  if (hearing === 1 && ctx.record.completedAt) {
+    fail('hearing 1 is finalized; start a new case instead of reopening its phases')
+  }
+  if (hearing === 2 && ctx.state.stage2?.hearing?.completedAt) {
+    fail('hearing 2 is finalized; its phases cannot be reopened')
+  }
   const schedule = hearing === 1 ? ctx.schedule : startSecondHearing(ctx)
   const item = schedule.phases[phase]
   if (item.startedAt) {
@@ -404,9 +438,19 @@ function cmdEnd() {
   const hearing = resolveHearingArg(args.hearing)
   const phase = args.phase
   if (!PHASES.includes(phase)) fail(`--phase must be one of: ${PHASES.join(', ')}`)
+  const status = typeof args.status === 'string' ? args.status : 'completed'
+  if (!['completed', 'timeout'].includes(status)) {
+    fail('--status must be one of: completed, timeout')
+  }
+  const missing = missingFlagFromArgs()
+  if (status === 'timeout' && missing.length === 0) {
+    fail('--status timeout requires at least one --missing "<material>" entry; record what is absent instead of inventing it')
+  }
   const ctx = loadCase(caseDir)
+  if (hearing === 1 && ctx.record.completedAt) fail('hearing 1 is finalized; its timeline is closed')
   const schedule = hearing === 1 ? ctx.schedule : ctx.state.stage2?.hearing
   if (!schedule?.phases?.[phase]) fail(`hearing ${hearing} has not started`)
+  if (hearing === 2 && schedule.completedAt) fail('hearing 2 is finalized; its timeline is closed')
   const item = schedule.phases[phase]
   if (!item.startedAt) fail(`${phase} has not started`)
   if (item.endedAt) {
@@ -417,15 +461,33 @@ function cmdEnd() {
       phase,
       endedAt: item.endedAt,
       durationSeconds: schedulePhaseDuration(schedule, phase),
+      missing: hearing === 1 ? ctx.record.outcome.missing ?? [] : ctx.state.stage2?.missing ?? [],
     }, null, 2))
     return
   }
   const ended = new Date()
   item.endedAt = iso(ended)
-  item.status = typeof args.status === 'string' ? args.status : 'completed'
+  item.status = status
   const durationSeconds = fmtSeconds(ended.getTime() - new Date(item.startedAt).getTime())
   const overdue = ended.getTime() > new Date(item.deadline).getTime()
-  ctx.record.status = hearing === 1 ? `${phase}_complete` : `retrial_${phase}_complete`
+  if (hearing === 1) {
+    appendMissing(ctx.record.outcome.missing, missing)
+    if (status === 'timeout') {
+      ctx.record.outcome.timedOut = true
+      ctx.record.status = 'timed_out'
+    } else {
+      ctx.record.status = `${phase}_complete`
+    }
+  } else {
+    const stage2 = ensureStage2(ctx)
+    appendMissing(stage2.missing, missing)
+    if (status === 'timeout') {
+      stage2.timedOut = true
+      ctx.record.status = 'retrial_timed_out'
+    } else {
+      ctx.record.status = `retrial_${phase}_complete`
+    }
+  }
   saveState(ctx)
   event(ctx, hearing === 1 ? 'phase_ended' : 'retrial_phase_ended', {
     phase,
@@ -434,6 +496,7 @@ function cmdEnd() {
     status: item.status,
     overdue,
     deadline: item.deadline,
+    ...(missing.length === 0 ? {} : { missing }),
     ...(hearing === 1 ? {} : { hearing }),
   })
   console.log(JSON.stringify({
@@ -444,6 +507,8 @@ function cmdEnd() {
     durationSeconds,
     overdue,
     deadline: item.deadline,
+    status,
+    missing,
   }, null, 2))
 }
 
@@ -481,6 +546,7 @@ function cmdRound() {
   }
   const ctx = loadCase(caseDir)
   if (hearing === 1) {
+    if (ctx.record.completedAt) fail('hearing 1 is finalized; its debate rounds are closed')
     ctx.record.outcome.rounds = Math.max(ctx.record.outcome.rounds ?? 0, round)
     saveState(ctx)
     event(ctx, 'debate_round', { round })
@@ -489,6 +555,7 @@ function cmdRound() {
   }
   const schedule = ctx.state.stage2?.hearing
   if (!schedule?.startedAt) fail('hearing 2 has not started')
+  if (schedule.completedAt) fail('hearing 2 is finalized; its debate rounds are closed')
   schedule.rounds = Math.max(schedule.rounds ?? 0, round)
   saveState(ctx)
   event(ctx, 'retrial_debate_round', { round, hearing: 2 })
@@ -549,6 +616,16 @@ function cmdCheckpoint() {
   console.log(JSON.stringify({ ok: true, decision, stage2Status: stage2.status }, null, 2))
 }
 
+const TERMINAL_STAGE2_STATUSES = new Set([
+  'approved',
+  'closed_by_user',
+  'retrial',
+  'completed',
+  'completed_with_violations',
+  'timed_out',
+  'timed_out_stage2',
+])
+
 function cmdReconstruct() {
   const caseDir = resolveCase(args.case)
   const ctx = loadCase(caseDir)
@@ -556,12 +633,23 @@ function cmdReconstruct() {
   if (!stage2 || stage2.checkpoint?.decision !== 'reconstruct') {
     fail('reconstruction requires checkpoint --decision reconstruct')
   }
+  if (TERMINAL_STAGE2_STATUSES.has(stage2.status)) {
+    fail(`reconstruction is closed: stage2 status is "${stage2.status}"`)
+  }
   if (args.begin === true) {
     if (stage2.reconstruction.startedAt && !stage2.reconstruction.endedAt) {
       console.log(JSON.stringify({ ok: true, alreadyStarted: true, startedAt: stage2.reconstruction.startedAt }, null, 2))
       return
     }
-    if (stage2.reconstruction.endedAt) fail('reconstruction already ended; request changes through approval first')
+    if (stage2.reconstruction.endedAt) {
+      if (stage2.reconstruction.status === 'completed') {
+        fail('reconstruction already completed; request changes through approval first')
+      }
+      // A failed or skipped attempt may be retried: close the failed attempt
+      // and start a new revision from the same checkpoint decision.
+      stage2.reconstruction.revisions += 1
+      stage2.reconstruction.endedAt = null
+    }
     stage2.reconstruction.startedAt = nowIso()
     stage2.reconstruction.status = 'running'
     stage2.status = 'reconstruction'
@@ -581,9 +669,13 @@ function cmdReconstruct() {
       }, null, 2))
       return
     }
+    const status = typeof args.status === 'string' ? args.status : 'completed'
+    if (!['completed', 'failed', 'skipped'].includes(status)) {
+      fail('--status must be one of: completed, failed, skipped')
+    }
     stage2.reconstruction.endedAt = nowIso()
-    stage2.reconstruction.status = typeof args.status === 'string' ? args.status : 'completed'
-    stage2.status = 'awaiting_approval'
+    stage2.reconstruction.status = status
+    stage2.status = status === 'completed' ? 'awaiting_approval' : 'reconstruction_failed'
     saveState(ctx)
     event(ctx, 'stage2_reconstruction_ended', {
       endedAt: stage2.reconstruction.endedAt,
@@ -594,6 +686,7 @@ function cmdReconstruct() {
       ok: true,
       endedAt: stage2.reconstruction.endedAt,
       status: stage2.reconstruction.status,
+      stage2Status: stage2.status,
     }, null, 2))
     return
   }
@@ -611,8 +704,33 @@ function cmdApproval() {
   if (!stage2 || stage2.checkpoint?.decision !== 'reconstruct') {
     fail('approval requires a reconstruction in progress')
   }
-  if (!stage2.reconstruction.endedAt) fail('approval requires a finished reconstruction: run reconstruct --end first')
+  if (TERMINAL_STAGE2_STATUSES.has(stage2.status)) {
+    fail(`approval is closed: stage2 status is "${stage2.status}"`)
+  }
   if (stage2.hearing?.startedAt) fail('approval is closed: hearing 2 has already started')
+  if (!stage2.reconstruction.endedAt) fail('approval requires a finished reconstruction: run reconstruct --end first')
+  if (decision !== 'stop' && stage2.reconstruction.status !== 'completed') {
+    fail(`cannot ${decision === 'approved' ? 'approve' : 'send for changes'} an unsuccessful or unfinished reconstruction `
+      + `(status: "${stage2.reconstruction.status ?? 'none'}"); retry the reconstruction or stop the process`)
+  }
+  if (decision !== 'stop' && stage2.status !== 'awaiting_approval') {
+    fail(`approval requires a completed reconstruction awaiting review; stage2 status is "${stage2.status}"`)
+  }
+  if (decision !== 'stop') {
+    const minBytes = config.verification?.minArtifactBytes ?? 80
+    const ideaFile = path.join(caseDir, config.stage2.artifacts.ideaV2)
+    if (!fs.existsSync(ideaFile) || fs.statSync(ideaFile).size < minBytes) {
+      fail(`approval requires a non-empty ${config.stage2.artifacts.ideaV2}: V2 is not complete`)
+    }
+    const reconstructionFile = path.join(caseDir, config.stage2.artifacts.reconstruction)
+    if (!fs.existsSync(reconstructionFile) || fs.statSync(reconstructionFile).size < minBytes) {
+      fail(`approval requires a non-empty ${config.stage2.artifacts.reconstruction}: V2 is not complete`)
+    }
+    const reconstructionText = fs.readFileSync(reconstructionFile, 'utf8')
+    if (!/^##\s+(?:\d+\.\s*)?Итоговая концепция V2/m.test(reconstructionText)) {
+      fail('approval requires the "## Итоговая концепция V2" section in reconstruction.md')
+    }
+  }
 
   const at = nowIso()
   const record = {
@@ -725,6 +843,8 @@ function cmdStatus() {
         revision: stage2.approval.revision,
         decisions: stage2.approval.decisions.length,
       },
+      missing: stage2.missing ?? [],
+      timedOut: Boolean(stage2.timedOut),
       hearing: hearing
         ? {
           number: hearing.number,
@@ -758,6 +878,8 @@ function cmdStatus() {
     totalRemainingSeconds: Math.max(0, fmtSeconds(new Date(ctx.schedule.totalDeadline).getTime() - now)),
     phases,
     rounds: ctx.record.outcome.rounds,
+    missing: ctx.record.outcome.missing ?? [],
+    timedOut: Boolean(ctx.record.outcome.timedOut),
     artifacts: listArtifacts(caseDir),
     stage2: stage2Summary,
   }, null, 2))
@@ -803,6 +925,22 @@ function verifyFirstHearing(caseDir, ctx) {
     (ctx.record.outcome.rounds ?? 0) <= config.limits.maxDebateRounds,
     `${ctx.record.outcome.rounds ?? 0} round(s) (limit ${config.limits.maxDebateRounds})`,
   )
+
+  const timedOut = timedOutPhases(ctx.schedule)
+  const missing = ctx.record.outcome.missing ?? []
+  for (const phase of timedOut) {
+    add(`${phase}_timed_out`, false, `${phase} ended by timeout; the hearing is not a clean completion`)
+  }
+  add(
+    'timeout_missing_materials',
+    timedOut.length === 0 || missing.length > 0,
+    timedOut.length === 0
+      ? 'no timed-out phase'
+      : (missing.length > 0
+        ? `missing materials recorded: ${missing.join('; ')}`
+        : 'a timed-out phase must record at least one missing material'),
+  )
+  ctx.record.outcome.timedOut = Boolean(ctx.record.outcome.timedOut || timedOut.length > 0)
 
   for (const artifact of listArtifacts(caseDir)) {
     add(
@@ -875,6 +1013,22 @@ function verifySecondHearing(caseDir, ctx) {
     (schedule.rounds ?? 0) <= config.limits.maxDebateRounds,
     `${schedule.rounds ?? 0} round(s) (limit ${config.limits.maxDebateRounds})`,
   )
+
+  const timedOut = timedOutPhases(schedule)
+  const missing = stage2.missing ?? []
+  for (const phase of timedOut) {
+    add(`retrial_${phase}_timed_out`, false, `${phase} ended by timeout; the retrial is not a clean completion`)
+  }
+  add(
+    'retrial_timeout_missing_materials',
+    timedOut.length === 0 || missing.length > 0,
+    timedOut.length === 0
+      ? 'no timed-out phase'
+      : (missing.length > 0
+        ? `missing materials recorded: ${missing.join('; ')}`
+        : 'a timed-out phase must record at least one missing material'),
+  )
+  stage2.timedOut = Boolean(stage2.timedOut || timedOut.length > 0)
 
   for (const artifact of listStage2Artifacts(caseDir)) {
     add(
@@ -964,6 +1118,21 @@ function verifySecondHearing(caseDir, ctx) {
     `checkpoint decision: ${stage2.checkpoint?.decision ?? 'none'}`,
   )
   add(
+    'reconstruction_status_completed',
+    stage2.reconstruction?.status === 'completed',
+    `reconstruction status: ${stage2.reconstruction?.status ?? 'none'}`,
+  )
+  add(
+    'approval_only_after_completed_reconstruction',
+    Boolean(stage2.approval?.approvedAt)
+      && stage2.reconstruction?.status === 'completed'
+      && Boolean(stage2.reconstruction?.endedAt)
+      && new Date(stage2.approval.approvedAt).getTime() >= new Date(stage2.reconstruction.endedAt).getTime(),
+    stage2.approval?.approvedAt
+      ? `V2 approved after reconstruction status "${stage2.reconstruction?.status ?? 'none'}"`
+      : 'V2 was not approved',
+  )
+  add(
     'reconstruction_before_retrial',
     Boolean(stage2.reconstruction?.endedAt) && new Date(stage2.reconstruction.endedAt).getTime() <= new Date(schedule.startedAt).getTime(),
     stage2.reconstruction?.endedAt
@@ -1023,6 +1192,7 @@ function cmdFinalize() {
   const ctx = loadCase(caseDir)
 
   if (hearing === 1) {
+    if (ctx.record.completedAt) fail('hearing 1 is already finalized')
     const stage2 = ctx.state.stage2
     if (stage2 && !['none', 'declined'].includes(stage2.status)) {
       fail(`hearing 1 is already finalized; stage2 status is "${stage2.status}"`)
@@ -1030,10 +1200,17 @@ function cmdFinalize() {
     const verification = ctx.state.verification
     if (!verification) fail('run verify before finalize')
     ctx.record.completedAt = nowIso()
-    ctx.record.status = verification.ok ? 'completed' : 'completed_with_violations'
+    ctx.record.status = ctx.record.outcome.timedOut
+      ? 'timed_out'
+      : (verification.ok ? 'completed' : 'completed_with_violations')
     ctx.record.outcome.violations = verification.checks.filter((check) => !check.ok).map((check) => check.name)
     saveState(ctx)
-    event(ctx, 'case_finalized', { status: ctx.record.status, verificationOk: verification.ok, hearing: 1 })
+    event(ctx, 'case_finalized', {
+      status: ctx.record.status,
+      verificationOk: verification.ok,
+      timedOut: Boolean(ctx.record.outcome.timedOut),
+      hearing: 1,
+    })
     console.log(JSON.stringify({
       ok: true,
       caseDir,
@@ -1041,20 +1218,31 @@ function cmdFinalize() {
       status: ctx.record.status,
       completedAt: ctx.record.completedAt,
       verificationOk: verification.ok,
+      timedOut: Boolean(ctx.record.outcome.timedOut),
     }, null, 2))
     return
   }
 
   const stage2 = ctx.state.stage2
   if (!stage2?.hearing?.startedAt) fail('hearing 2 has not started')
+  if (stage2.hearing.completedAt) fail('hearing 2 is already finalized')
   const verification = stage2.verification
   if (!verification) fail('run verify --hearing 2 before finalize')
   stage2.hearing.completedAt = nowIso()
-  stage2.status = verification.ok ? 'completed' : 'completed_with_violations'
-  ctx.record.status = verification.ok ? 'completed_stage2' : 'completed_stage2_with_violations'
+  stage2.status = stage2.timedOut
+    ? 'timed_out'
+    : (verification.ok ? 'completed' : 'completed_with_violations')
+  ctx.record.status = stage2.timedOut
+    ? 'timed_out_stage2'
+    : (verification.ok ? 'completed_stage2' : 'completed_stage2_with_violations')
   stage2.violations = verification.checks.filter((check) => !check.ok).map((check) => check.name)
   saveState(ctx)
-  event(ctx, 'case_finalized', { status: ctx.record.status, verificationOk: verification.ok, hearing: 2 })
+  event(ctx, 'case_finalized', {
+    status: ctx.record.status,
+    verificationOk: verification.ok,
+    timedOut: Boolean(stage2.timedOut),
+    hearing: 2,
+  })
   console.log(JSON.stringify({
     ok: true,
     caseDir,
@@ -1063,6 +1251,7 @@ function cmdFinalize() {
     stage2Status: stage2.status,
     completedAt: stage2.hearing.completedAt,
     verificationOk: verification.ok,
+    timedOut: Boolean(stage2.timedOut),
   }, null, 2))
 }
 

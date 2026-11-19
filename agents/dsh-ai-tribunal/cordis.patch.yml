@@ -2,10 +2,11 @@
 #
 # One user-facing preset. The Secretary, Prosecutor, Defense and Judge are
 # subagent sessions under this same preset; the project owns every role
-# prompt. `tribunal-spawn` starts a role child and marks it; `tribunal-guard`
-# denies write, shell and spawn tools for exactly those marked sessions.
-# No service-role presets are declared, so the preset menu contains only
-# "AI Tribunal".
+# prompt. `tribunal-spawn` reserves a durable role-tagged session id before the
+# child exists and enforces the phase deadline; `tribunal-guard` denies write,
+# shell and spawn tools for exactly those role sessions, including after a cold
+# resume. No service-role presets are declared, so the preset menu contains
+# only "AI Tribunal".
 - insert:
     - id: preset-tribunal-secretary
       name: '@deepseek-ai/dsh-agent-preset'

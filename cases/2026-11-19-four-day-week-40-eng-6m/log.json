@@ -1,0 +1,646 @@
+{
+  "schemaVersion": 2,
+  "case": {
+    "schemaVersion": 2,
+    "id": "2026-11-19-four-day-week-40-eng-6m",
+    "slug": "four-day-week-40-eng-6m",
+    "title": "Перевод 40 инженеров на четырёхдневную рабочую неделю с сохранением зарплаты на 6 месяцев",
+    "status": "completed_stage2",
+    "createdAt": "2026-11-19T21:56:25.821Z",
+    "startedAt": "2026-11-19T21:56:25.821Z",
+    "completedAt": "2026-11-19T22:00:35.175Z",
+    "limits": {
+      "totalSeconds": 780,
+      "preparationSeconds": 240,
+      "debateSeconds": 300,
+      "verdictSeconds": 240,
+      "maxDebateRounds": 2,
+      "minSecondRoundRemainingSeconds": 90,
+      "intakeTargetSeconds": 60,
+      "minAgentWaitMs": 10000
+    },
+    "roles": {
+      "secretary": "secretary",
+      "prosecutor": "prosecutor",
+      "defense": "defense",
+      "judge": "judge",
+      "architect": "architect",
+      "auditor": "auditor"
+    },
+    "outcome": {
+      "verdictStatus": "ОДОБРИТЬ С УСЛОВИЯМИ",
+      "rounds": 2,
+      "missing": [],
+      "violations": [],
+      "timedOut": false
+    }
+  },
+  "schedule": {
+    "startedAt": "2026-11-19T21:56:25.821Z",
+    "totalDeadline": "2026-11-19T22:09:25.821Z",
+    "phases": {
+      "preparation": {
+        "maxSeconds": 240,
+        "deadline": "2026-11-19T22:00:25.821Z",
+        "startedAt": "2026-11-19T21:56:35.676Z",
+        "endedAt": "2026-11-19T21:57:43.333Z",
+        "status": "completed"
+      },
+      "debate": {
+        "maxSeconds": 300,
+        "deadline": "2026-11-19T22:02:43.373Z",
+        "startedAt": "2026-11-19T21:57:43.373Z",
+        "endedAt": "2026-11-19T21:59:19.368Z",
+        "status": "completed"
+      },
+      "verdict": {
+        "maxSeconds": 240,
+        "deadline": "2026-11-19T22:03:19.404Z",
+        "startedAt": "2026-11-19T21:59:19.404Z",
+        "endedAt": "2026-11-19T22:00:10.247Z",
+        "status": "completed"
+      }
+    },
+    "limits": {
+      "totalSeconds": 780,
+      "preparationSeconds": 240,
+      "debateSeconds": 300,
+      "verdictSeconds": 240,
+      "maxDebateRounds": 2,
+      "minSecondRoundRemainingSeconds": 90,
+      "intakeTargetSeconds": 60,
+      "minAgentWaitMs": 10000
+    }
+  },
+  "events": [
+    {
+      "at": "2026-11-19T21:56:25.821Z",
+      "type": "case_created",
+      "caseId": "2026-11-19-four-day-week-40-eng-6m",
+      "title": "Перевод 40 инженеров на четырёхдневную рабочую неделю с сохранением зарплаты на 6 месяцев"
+    },
+    {
+      "at": "2026-11-19T21:56:25.821Z",
+      "type": "clock_started",
+      "startedAt": "2026-11-19T21:56:25.821Z",
+      "totalDeadline": "2026-11-19T22:09:25.821Z"
+    },
+    {
+      "at": "2026-11-19T21:56:35.677Z",
+      "type": "phase_started",
+      "phase": "preparation",
+      "startedAt": "2026-11-19T21:56:35.676Z",
+      "deadline": "2026-11-19T22:00:25.821Z"
+    },
+    {
+      "at": "2026-11-19T21:57:43.334Z",
+      "type": "phase_ended",
+      "phase": "preparation",
+      "endedAt": "2026-11-19T21:57:43.333Z",
+      "durationSeconds": 68,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T22:00:25.821Z"
+    },
+    {
+      "at": "2026-11-19T21:57:43.374Z",
+      "type": "phase_started",
+      "phase": "debate",
+      "startedAt": "2026-11-19T21:57:43.373Z",
+      "deadline": "2026-11-19T22:02:43.373Z"
+    },
+    {
+      "at": "2026-11-19T21:58:44.071Z",
+      "type": "debate_round",
+      "round": 1
+    },
+    {
+      "at": "2026-11-19T21:59:19.329Z",
+      "type": "debate_round",
+      "round": 2
+    },
+    {
+      "at": "2026-11-19T21:59:19.369Z",
+      "type": "phase_ended",
+      "phase": "debate",
+      "endedAt": "2026-11-19T21:59:19.368Z",
+      "durationSeconds": 96,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T22:02:43.373Z"
+    },
+    {
+      "at": "2026-11-19T21:59:19.405Z",
+      "type": "phase_started",
+      "phase": "verdict",
+      "startedAt": "2026-11-19T21:59:19.404Z",
+      "deadline": "2026-11-19T22:03:19.404Z"
+    },
+    {
+      "at": "2026-11-19T22:00:10.248Z",
+      "type": "phase_ended",
+      "phase": "verdict",
+      "endedAt": "2026-11-19T22:00:10.247Z",
+      "durationSeconds": 51,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T22:03:19.404Z"
+    },
+    {
+      "at": "2026-11-19T22:00:35.175Z",
+      "type": "case_finalized",
+      "status": "completed",
+      "verificationOk": true,
+      "timedOut": false,
+      "hearing": 1
+    },
+    {
+      "at": "2026-11-19T22:00:42.365Z",
+      "type": "stage2_checkpoint_offered",
+      "offeredAt": "2026-11-19T22:00:42.363Z"
+    },
+    {
+      "at": "2026-11-19T22:00:45.463Z",
+      "type": "stage2_reconstruction_requested",
+      "decision": "reconstruct",
+      "userInput": {
+        "goals": "пользователь не уточнил",
+        "constraints": "пользователь не уточнил",
+        "note": "AUTONOMOUS RUN, STAGE2: EMULATE CONSENT — решение эмулировано Секретарём по явному указанию задачи; пользователь в этой сессии не отвечал и дополнительных целей и ограничений не сообщал.",
+        "emulated": true
+      }
+    },
+    {
+      "at": "2026-11-19T22:00:48.206Z",
+      "type": "stage2_reconstruction_started",
+      "startedAt": "2026-11-19T22:00:48.205Z"
+    },
+    {
+      "at": "2026-11-19T22:00:54.012Z",
+      "type": "agent_started",
+      "role": "architect",
+      "agent": "architect"
+    },
+    {
+      "at": "2026-11-19T22:02:35.684Z",
+      "type": "agent_started",
+      "role": "auditor",
+      "agent": "auditor"
+    },
+    {
+      "at": "2026-11-19T22:05:40.051Z",
+      "type": "stage2_reconstruction_ended",
+      "endedAt": "2026-11-19T22:05:40.050Z",
+      "status": "completed",
+      "durationSeconds": 292
+    },
+    {
+      "at": "2026-11-19T22:05:40.088Z",
+      "type": "stage2_v2_approved",
+      "emulated": true,
+      "revisions": 0
+    },
+    {
+      "at": "2026-11-19T22:05:43.322Z",
+      "type": "stage2_hearing_started",
+      "hearing": 2,
+      "startedAt": "2026-11-19T22:05:43.320Z",
+      "totalDeadline": "2026-11-19T22:18:43.320Z"
+    },
+    {
+      "at": "2026-11-19T22:05:43.322Z",
+      "type": "retrial_phase_started",
+      "phase": "preparation",
+      "startedAt": "2026-11-19T22:05:43.322Z",
+      "deadline": "2026-11-19T22:09:43.320Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-19T22:05:54.833Z",
+      "type": "agent_started",
+      "hearing": 2,
+      "role": "prosecutor",
+      "agent": "prosecutor-v2"
+    },
+    {
+      "at": "2026-11-19T22:05:54.874Z",
+      "type": "agent_started",
+      "hearing": 2,
+      "role": "defense",
+      "agent": "defense-v2"
+    },
+    {
+      "at": "2026-11-19T22:07:27.904Z",
+      "type": "retrial_phase_ended",
+      "phase": "preparation",
+      "endedAt": "2026-11-19T22:07:27.901Z",
+      "durationSeconds": 105,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T22:09:43.320Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-19T22:07:27.945Z",
+      "type": "retrial_phase_started",
+      "phase": "debate",
+      "startedAt": "2026-11-19T22:07:27.942Z",
+      "deadline": "2026-11-19T22:12:27.942Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-19T22:08:24.796Z",
+      "type": "retrial_debate_round",
+      "round": 1,
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-19T22:09:03.720Z",
+      "type": "retrial_debate_round",
+      "round": 2,
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-19T22:09:03.760Z",
+      "type": "retrial_phase_ended",
+      "phase": "debate",
+      "endedAt": "2026-11-19T22:09:03.757Z",
+      "durationSeconds": 96,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T22:12:27.942Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-19T22:09:03.798Z",
+      "type": "retrial_phase_started",
+      "phase": "verdict",
+      "startedAt": "2026-11-19T22:09:03.796Z",
+      "deadline": "2026-11-19T22:13:03.796Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-19T22:09:10.344Z",
+      "type": "agent_started",
+      "hearing": 2,
+      "role": "judge",
+      "agent": "judge-v2"
+    },
+    {
+      "at": "2026-11-19T22:10:24.871Z",
+      "type": "retrial_phase_ended",
+      "phase": "verdict",
+      "endedAt": "2026-11-19T22:10:24.869Z",
+      "durationSeconds": 81,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T22:13:03.796Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-19T22:11:00.314Z",
+      "type": "case_finalized",
+      "status": "completed_stage2",
+      "verificationOk": true,
+      "timedOut": false,
+      "hearing": 2
+    }
+  ],
+  "verification": {
+    "ok": true,
+    "verifiedAt": "2026-11-19T22:13:06.059Z",
+    "caseId": "2026-11-19-four-day-week-40-eng-6m",
+    "hearing": 1,
+    "checks": [
+      {
+        "name": "total_duration",
+        "ok": true,
+        "detail": "249s from case creation (limit 780s)"
+      },
+      {
+        "name": "preparation_duration",
+        "ok": true,
+        "detail": "preparation 68s (limit 240s)"
+      },
+      {
+        "name": "debate_duration",
+        "ok": true,
+        "detail": "debate 96s (limit 300s)"
+      },
+      {
+        "name": "verdict_duration",
+        "ok": true,
+        "detail": "verdict 51s (limit 240s)"
+      },
+      {
+        "name": "preparation_deadline",
+        "ok": true,
+        "detail": "preparation ended 162s before its deadline"
+      },
+      {
+        "name": "debate_deadline",
+        "ok": true,
+        "detail": "debate ended 204s before its deadline"
+      },
+      {
+        "name": "verdict_deadline",
+        "ok": true,
+        "detail": "verdict ended 189s before its deadline"
+      },
+      {
+        "name": "debate_rounds",
+        "ok": true,
+        "detail": "2 round(s) (limit 2)"
+      },
+      {
+        "name": "timeout_missing_materials",
+        "ok": true,
+        "detail": "no timed-out phase"
+      },
+      {
+        "name": "artifact:case.md",
+        "ok": true,
+        "detail": "7780 bytes"
+      },
+      {
+        "name": "artifact:transcript.md",
+        "ok": true,
+        "detail": "78145 bytes"
+      },
+      {
+        "name": "artifact:verdict.md",
+        "ok": true,
+        "detail": "11863 bytes"
+      },
+      {
+        "name": "artifact:report.md",
+        "ok": true,
+        "detail": "17057 bytes"
+      },
+      {
+        "name": "verdict_status",
+        "ok": true,
+        "detail": "status: ОДОБРИТЬ С УСЛОВИЯМИ"
+      },
+      {
+        "name": "report_contains_verdict_status",
+        "ok": true,
+        "detail": "report must quote the verdict status"
+      },
+      {
+        "name": "report_has_verdict_section",
+        "ok": true,
+        "detail": "report must contain a \"## Вердикт\" or \"## N. Вердикт\" section"
+      }
+    ]
+  },
+  "stage2": {
+    "status": "completed",
+    "checkpoint": {
+      "offeredAt": "2026-11-19T22:00:42.363Z",
+      "decision": "reconstruct",
+      "decidedAt": "2026-11-19T22:00:45.463Z",
+      "userInput": {
+        "goals": "пользователь не уточнил",
+        "constraints": "пользователь не уточнил",
+        "note": "AUTONOMOUS RUN, STAGE2: EMULATE CONSENT — решение эмулировано Секретарём по явному указанию задачи; пользователь в этой сессии не отвечал и дополнительных целей и ограничений не сообщал.",
+        "emulated": true
+      },
+      "emulated": true
+    },
+    "baseline": {
+      "recordedAt": "2026-11-19T22:00:42.361Z",
+      "hashes": {
+        "case.md": "c07a61488c0ff24afab77f97a82cbe32f95def9535d057528c8d4822d60ef416",
+        "transcript.md": "61b836506e1a4b27574592488b6434259fa61076fa368515c020e9be4711c26e",
+        "verdict.md": "0813b2df1d100edbbe2adcc25a98ab2094f78675144f5482db2cee3817148951",
+        "report.md": "c2b44507b1620b639420dccbcf8ed160a524a4c4cc9f6727be37c6eef2c83745"
+      }
+    },
+    "reconstruction": {
+      "startedAt": "2026-11-19T22:00:48.205Z",
+      "endedAt": "2026-11-19T22:05:40.050Z",
+      "status": "completed",
+      "revisions": 0
+    },
+    "approval": {
+      "decisions": [
+        {
+          "at": "2026-11-19T22:05:40.088Z",
+          "decision": "approved",
+          "note": "AUTONOMOUS RUN, STAGE2: EMULATE CONSENT — утверждение V2 эмулировано Секретарём по явному указанию задачи; пользователь в этой сессии не отвечал. Обязательных исправлений Аудитора B1–B5 в итоговой редакции не осталось; открытые вопросы из reconstruction.md §5 (исключение ролей с k = 1 из пилота, вариант A5 с двумя когортами, подтверждение цели реконструкции) пользователем не решались.",
+          "emulated": true
+        }
+      ],
+      "approvedAt": "2026-11-19T22:05:40.088Z",
+      "revision": 0
+    },
+    "hearing": {
+      "number": 2,
+      "startedAt": "2026-11-19T22:05:43.320Z",
+      "totalDeadline": "2026-11-19T22:18:43.320Z",
+      "phases": {
+        "preparation": {
+          "maxSeconds": 240,
+          "deadline": "2026-11-19T22:09:43.320Z",
+          "startedAt": "2026-11-19T22:05:43.322Z",
+          "endedAt": "2026-11-19T22:07:27.901Z",
+          "status": "completed"
+        },
+        "debate": {
+          "maxSeconds": 300,
+          "deadline": "2026-11-19T22:12:27.942Z",
+          "startedAt": "2026-11-19T22:07:27.942Z",
+          "endedAt": "2026-11-19T22:09:03.757Z",
+          "status": "completed"
+        },
+        "verdict": {
+          "maxSeconds": 240,
+          "deadline": "2026-11-19T22:13:03.796Z",
+          "startedAt": "2026-11-19T22:09:03.796Z",
+          "endedAt": "2026-11-19T22:10:24.869Z",
+          "status": "completed"
+        }
+      },
+      "limits": {
+        "totalSeconds": 780,
+        "preparationSeconds": 240,
+        "debateSeconds": 300,
+        "verdictSeconds": 240,
+        "maxDebateRounds": 2,
+        "minSecondRoundRemainingSeconds": 90,
+        "intakeTargetSeconds": 60,
+        "minAgentWaitMs": 10000
+      },
+      "rounds": 2,
+      "completedAt": "2026-11-19T22:11:00.312Z"
+    },
+    "verdictStatus": "ОДОБРИТЬ С УСЛОВИЯМИ",
+    "missing": [],
+    "timedOut": false,
+    "violations": [],
+    "verification": {
+      "ok": true,
+      "verifiedAt": "2026-11-19T22:13:06.108Z",
+      "caseId": "2026-11-19-four-day-week-40-eng-6m",
+      "hearing": 2,
+      "checks": [
+        {
+          "name": "retrial_total_duration",
+          "ok": true,
+          "detail": "317s from retrial start (limit 780s)"
+        },
+        {
+          "name": "retrial_preparation_duration",
+          "ok": true,
+          "detail": "preparation 105s (limit 240s)"
+        },
+        {
+          "name": "retrial_preparation_deadline",
+          "ok": true,
+          "detail": "preparation ended 135s before its deadline"
+        },
+        {
+          "name": "retrial_debate_duration",
+          "ok": true,
+          "detail": "debate 96s (limit 300s)"
+        },
+        {
+          "name": "retrial_debate_deadline",
+          "ok": true,
+          "detail": "debate ended 204s before its deadline"
+        },
+        {
+          "name": "retrial_verdict_duration",
+          "ok": true,
+          "detail": "verdict 81s (limit 240s)"
+        },
+        {
+          "name": "retrial_verdict_deadline",
+          "ok": true,
+          "detail": "verdict ended 159s before its deadline"
+        },
+        {
+          "name": "retrial_debate_rounds",
+          "ok": true,
+          "detail": "2 round(s) (limit 2)"
+        },
+        {
+          "name": "retrial_timeout_missing_materials",
+          "ok": true,
+          "detail": "no timed-out phase"
+        },
+        {
+          "name": "stage2_artifact:idea-v2.md",
+          "ok": true,
+          "detail": "5546 bytes"
+        },
+        {
+          "name": "stage2_artifact:reconstruction.md",
+          "ok": true,
+          "detail": "78762 bytes"
+        },
+        {
+          "name": "stage2_artifact:transcript-v2.md",
+          "ok": true,
+          "detail": "88700 bytes"
+        },
+        {
+          "name": "stage2_artifact:verdict-v2.md",
+          "ok": true,
+          "detail": "14521 bytes"
+        },
+        {
+          "name": "stage2_artifact:comparison.md",
+          "ok": true,
+          "detail": "25651 bytes"
+        },
+        {
+          "name": "retrial_verdict_status",
+          "ok": true,
+          "detail": "status: ОДОБРИТЬ С УСЛОВИЯМИ"
+        },
+        {
+          "name": "reconstruction_has_v2_concept",
+          "ok": true,
+          "detail": "reconstruction.md must contain \"## Итоговая концепция V2\""
+        },
+        {
+          "name": "idea_v2_has_heading",
+          "ok": true,
+          "detail": "idea-v2.md must start with a Markdown heading"
+        },
+        {
+          "name": "comparison_contains_verdict2_status",
+          "ok": true,
+          "detail": "comparison.md must quote the V2 verdict status"
+        },
+        {
+          "name": "comparison_mentions_v1_v2",
+          "ok": true,
+          "detail": "comparison.md must name both V1 and V2"
+        },
+        {
+          "name": "comparison_section:Что улучшилось",
+          "ok": true,
+          "detail": "comparison.md must contain the \"## Что улучшилось\" section"
+        },
+        {
+          "name": "comparison_section:Какие проблемы сохранились",
+          "ok": true,
+          "detail": "comparison.md must contain the \"## Какие проблемы сохранились\" section"
+        },
+        {
+          "name": "comparison_section:Какие проблемы появились",
+          "ok": true,
+          "detail": "comparison.md must contain the \"## Какие проблемы появились\" section"
+        },
+        {
+          "name": "comparison_section:Какой вариант предпочтительнее",
+          "ok": true,
+          "detail": "comparison.md must contain the \"## Какой вариант предпочтительнее\" section"
+        },
+        {
+          "name": "v1_immutable",
+          "ok": true,
+          "detail": "V1 artifacts unchanged since the checkpoint"
+        },
+        {
+          "name": "checkpoint_reconstruct",
+          "ok": true,
+          "detail": "checkpoint decision: reconstruct"
+        },
+        {
+          "name": "reconstruction_status_completed",
+          "ok": true,
+          "detail": "reconstruction status: completed"
+        },
+        {
+          "name": "approval_only_after_completed_reconstruction",
+          "ok": true,
+          "detail": "V2 approved after reconstruction status \"completed\""
+        },
+        {
+          "name": "reconstruction_before_retrial",
+          "ok": true,
+          "detail": "reconstruction ended 3s before the retrial"
+        },
+        {
+          "name": "v2_approved_before_retrial",
+          "ok": true,
+          "detail": "V2 approved 3s before the retrial"
+        },
+        {
+          "name": "retrial_roles_recorded",
+          "ok": true,
+          "detail": "roles recorded: prosecutor=prosecutor-v2, defense=defense-v2, judge=judge-v2"
+        },
+        {
+          "name": "retrial_roles_distinct",
+          "ok": true,
+          "detail": "sessions: prosecutor-v2, defense-v2, judge-v2"
+        }
+      ]
+    }
+  }
+}
