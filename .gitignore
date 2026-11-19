@@ -1,0 +1,54 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors and IDEs
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Runtime output and local caches
+logs/
+.cache/
+.tmp/
+tmp/
+*.sqlite
+*.db
+
+# Data sets and generated artifacts are versioned separately when needed
+# data/
+# outputs/
