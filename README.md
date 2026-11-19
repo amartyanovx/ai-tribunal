@@ -1,49 +1,183 @@
-# AI Tribunal
+# AI Tribunal — этапы 1–2 MVP
 
-**Status:** early scaffold — the repository is initialized, but there is no implementation yet.
+Локальная мультиагентная система состязательной экспертизы идей на базе DeepSeek Harness (DSH Desktop).
 
-AI Tribunal is a project about structured, multi-agent AI deliberation. Instead of asking one
-model for an answer, a group of independent AI participants — roles such as advocates, experts
-and judges — examine the same question, argue their positions, and produce a reasoned verdict.
-Disagreement is preserved as evidence rather than averaged away.
+Этап 1 — независимое разбирательство идеи V1 (Прокурор, Адвокат, Судья). Этап 2 — реконструкция идеи по вердикту V1 и повторный суд над улучшенной версией V2 со сравнением обоих вердиктов.
 
-## Why
+Четыре постоянные роли работают в **отдельных сессиях DSH**, но пользовательский preset только один:
 
-A single model response collapses uncertainty into one voice. Many real questions — policy,
-architecture, risk assessment, factual disputes — are better served by a transparent process:
-independent positions, explicit challenges, and a verdict that can be audited back to the
-arguments that produced it.
+| Роль | Как запускается | Полномочия |
+|---|---|---|
+| **Секретарь** | preset **AI Tribunal** (корень) | Единственная точка общения с пользователем. Ведёт дело, запускает стороны, Судью, Архитектора и Аудитора, соблюдает дедлайны, сохраняет материалы. Не спорит и не оценивает идею, не пишет реконструкцию и сравнение от себя. |
+| **Прокурор** | subagent-сессия через `tribunal_spawn` | Ищет проверяемые недостатки, формулирует обвинения с ID и доказательствами. Read-only guard. На этапе 2 — новая сессия `prosecutor-v2`. |
+| **Адвокат** | subagent-сессия через `tribunal_spawn` | Защищает идею в сильнейшей честной версии, приводит контраргументы. Read-only guard. На этапе 2 — новая сессия `defense-v2`. |
+| **Судья** | subagent-сессия через `tribunal_spawn` | Независимо оценивает утверждения и выносит мотивированный вердикт. Read-only guard. На этапе 2 — новая сессия `judge-v2`. |
+| **Архитектор реконструкции** | временная subagent-сессия (`role="architect"`), только этап 2 | Разрабатывает V2 по вердикту V1: устраняет дефекты, сохраняет сильные стороны, рассматривает альтернативы и обосновывает каждое существенное изменение. Read-only guard. |
+| **Аудитор реконструкции** | временная subagent-сессия (`role="auditor"`), только этап 2 | Независимо проверяет черновик V2: покрытие условий V1, обоснованность изменений, новые риски. Не переписывает V2. Read-only guard. |
 
-## Design goals (working draft)
+`tribunal_spawn` помечает сессию роли; `tribunal-guard` запрещает ей `write`, `edit`, `pwsh`/`bash`, `subagent`, `tribunal_spawn`, `send_message`, `present` и `ask_user_question`. Все артефакты сохраняет Секретарь — дословно, без редактирования. Архитектор и Аудитор — временные роли: после этапа 2 их сессии не используются.
 
-- **Independent reasoning first, deliberation second.** Participants form positions before
-  they see each other's arguments.
-- **Explicit protocol.** Roles, turn order and the verdict format are defined, not improvised.
-- **Auditable transcripts.** Every claim in the verdict traces back to a participant and a turn.
-- **Model-agnostic.** Any provider or local model sits behind a single participant interface.
+## Как это работает
 
-## Repository layout (planned)
+1. Пользователь выбирает единственный preset **AI Tribunal** и отправляет идею.
+2. Секретарь создаёт папку дела, фиксирует материалы и запускает Прокурора и Адвоката **параллельно, в разных subagent-сессиях** через `tribunal_spawn`. До дебатов они не видят заключений друг друга.
+3. Проводятся до двух раундов дебатов: каждая сторона получает текст оппонента и отвечает на конкретные тезисы по ID.
+4. Судья запускается **после** дебатов новой subagent-сессией через `tribunal_spawn`, изучает материалы и выносит вердикт со статусами `доказано / опровергнуто / неопределено`.
+5. Секретарь проверяет регламент, сохраняет отчёт и завершает первое разбирательство.
+6. **Контрольная точка.** Секретарь предлагает пользователю завершить дело или запустить реконструкцию; пользователь может уточнить цели и ограничения. Решение фиксируется в `log.json`.
+7. **Реконструкция.** Архитектор разрабатывает V2 на основании вердикта V1: закрывает доказанные дефекты, сохраняет сильные стороны, рассматривает альтернативы и обосновывает каждое существенное изменение. Аудитор независимо проверяет черновик.
+8. **Утверждение.** Секретарь предъявляет V2; пользователь утверждает её, требует корректировки или завершает процесс.
+9. **Повторный суд.** После утверждения V2 проводятся новые независимые подготовка, дебаты и вердикт — по тому же протоколу, с собственными 780 секундами. Участники V1 и реконструкции не переиспользуются.
+10. **Итог.** Секретарь сохраняет `verdict-v2.md` и `comparison.md`: что улучшилось, какие проблемы сохранились, какие появились и какой вариант предпочтительнее.
 
-```text
-src/        application code
-docs/       design notes and decision records
-tests/      automated tests
-scripts/    developer tooling
+Секретарь управляет всей процедурой через `tribunal_spawn`, `wait_agent`, `send_message` и `interrupt_agent`. Роли, правила и форматы лежат в проекте (`prompts/roles/`, `config/`); DSH-preset — только оболочка с инструментами и guard'ом.
+
+## Тайминги
+
+Все значения — в [`config/tribunal.config.json`](config/tribunal.config.json), не в инструкциях агентов.
+
+| Фаза | Лимит |
+|---|---:|
+| Приём дела + независимая подготовка сторон | 240 с |
+| Дебаты (максимум 2 раунда) | 300 с |
+| Вердикт Судьи (зарезервировано) | 240 с |
+| **Итого каждое разбирательство** | **780 с (13 минут)** |
+
+**780 секунд — это лимит каждого судебного разбирательства, а не всего дела.** Повторный суд получает собственные 780 секунд. Контрольная точка, реконструкция, аудит и ожидание пользователя выполняются отдельно и в этот лимит не входят; отсчёт повторного суда начинается только после утверждения V2.
+
+Скрипт [`scripts/tribunal.mjs`](scripts/tribunal.mjs) — единственный источник дедлайнов. Он фиксирует timeline, не даёт дебатам выйти за окно, резервирующее 240 секунд Судье, и после процесса проверяет фактические длительности. Команды этапа 2 принимают `--hearing 2` и работают с отдельным расписанием. Секретарь ждёт стороны через `wait_agent` с остатком времени и прерывает их через `interrupt_agent` по дедлайну. Если материал не получен, он помечается как отсутствующий; аргументы не выдумываются.
+
+## Установка
+
+Требуется DSH Desktop (Windows) и установленный бандл:
+
+```powershell
+# из корня проекта
+dsh plugin --profile desktop add "D:\AI\Projects\AI Tribunal\agents\dsh-ai-tribunal"
 ```
 
-## Getting started
+Либо установите каталог `agents/dsh-ai-tribunal` как bundle через менеджер плагинов DSH. После установки **перезапустите DSH**, чтобы новый bundle загрузился.
 
-There is nothing to run yet. Prerequisites, installation and usage will be documented here as
-the project takes shape.
+Проверка:
 
-## Roadmap
+```powershell
+node scripts/tribunal.mjs selftest
+```
 
-- [x] Initialize the repository
-- [ ] Define the tribunal protocol: roles, turns, verdict format
-- [ ] Implement a minimal multi-agent deliberation loop
-- [ ] Store and replay transcripts
-- [ ] Build an evaluation harness for verdict quality
+## Запуск дела
 
-## License
+1. Новая сессия DSH → preset **AI Tribunal**.
+2. Отправьте идею. Для автономного прогона добавьте в начало `AUTONOMOUS RUN` — тогда Секретарь не задаёт уточняющих вопросов, а фиксирует предположения в `case.md`. Контрольная точка и утверждение V2 остаются обязательными: для приёмочного прогона на этапе 2 добавьте `STAGE2: EMULATE CONSENT`, иначе Секретарь остановится и будет ждать решения пользователя.
+3. Секретарь сам создаст папку в `cases/`, проведёт первое разбирательство, предложит реконструкцию и — после утверждения — повторный суд, затем вернёт сравнение V1/V2.
 
-Not chosen yet.
+Пример идеи и контекста — [`prompts/trial-idea.md`](prompts/trial-idea.md).
+
+> В меню DSH один preset — **AI Tribunal**. Прокурор, Адвокат, Судья, Архитектор и Аудитор не являются preset'ами: это subagent-сессии того же preset'а, помеченные read-only и запускаемые Секретарём.
+
+## Приёмочный прогон
+
+Полный цикл этапа 1 проведён на деле [`cases/2026-11-19-four-day-week-engineers`](cases/2026-11-19-four-day-week-engineers) на архитектуре «один preset + `tribunal_spawn` + guard»:
+
+- идея → независимые позиции Прокурора и Адвоката → 2 раунда дебатов → вердикт Судьи → отчёт Секретаря;
+- вердикт: **ОДОБРИТЬ С УСЛОВИЯМИ**;
+- подготовка 64 с, дебаты 108 с, вердикт 71 с, всего 328 с из 780;
+- роли запущены через `tribunal_spawn`, помечены read-only и не писали файлы;
+- `log.json`: все проверки пройдены, статус дела `completed`.
+
+Этап 2 проведён на том же деле без повторения первого разбирательства:
+
+- контрольная точка → согласие на реконструкцию (эмулировано для приёмочного прогона);
+- Архитектор → V2, независимый Аудитор → рецензия с обязательными исправлениями B1–B7, Архитектор → итоговая V2;
+- реконструкция заняла около 11 минут и в 780 секунд повторного суда не вошла;
+- утверждение V2 (эмулировано, включая П1–П6) → новые Прокурор, Адвокат и Судья → 2 раунда дебатов → вердикт V2;
+- вердикт V2: **ОДОБРИТЬ С УСЛОВИЯМИ**; закрыты C1, C2, C3-R2, C7a, C8, C9 и U5, частично — U1–U4, U6–U8, C4a, C5, C6b, D1, D2;
+- подготовка 137 с, дебаты 122 с (2 раунда), вердикт 81 с, полный отсчёт 390 с из 780;
+- V1-артефакты не изменены (`v1_immutable`), роли повторного суда — отдельные сессии `prosecutor-v2`, `defense-v2`, `judge-v2`;
+- `log.json`: все 28 проверок повторного суда пройдены, статус дела `completed_stage2`.
+
+> Приёмочный прогон этапа 2 выполнялся в сессии без preset **AI Tribunal**, поэтому роли запускались штатным subagent-инструментом DSH, а read-only обеспечивался уставом, а не guard'ом. Рабочий путь — `tribunal_spawn` + `tribunal-guard`; он проверяется unit-тестами (`npm test`). Это зафиксировано событием `mechanism_note` в `log.json`.
+
+Итоговые файлы: [`comparison.md`](cases/2026-11-19-four-day-week-engineers/comparison.md), [`verdict-v2.md`](cases/2026-11-19-four-day-week-engineers/verdict-v2.md), [`verdict.md`](cases/2026-11-19-four-day-week-engineers/verdict.md), [`report.md`](cases/2026-11-19-four-day-week-engineers/report.md).
+
+## Дело
+
+Каждое дело — отдельная папка. Первое разбирательство создаёт пять файлов, этап 2 дописывает пять новых:
+
+```text
+cases/<дата>-<slug>/
+  case.md            идея V1, контекст, допущения, границы, критерий успеха
+  transcript.md      дословно: позиции сторон V1 и все раунды дебатов
+  verdict.md         вердикт V1 Судьи (неизменяем после контрольной точки)
+  report.md          отчёт Секретаря по V1 с полным текстом вердикта
+  log.json           машинная запись: статус, тайминги, события, verify, stage2
+  idea-v2.md         утверждённая V2
+  reconstruction.md  черновик Архитектора, рецензия Аудитора, итоговая редакция
+  transcript-v2.md   дословно: позиции сторон V2 и раунды повторного суда
+  verdict-v2.md      вердикт V2 со сверкой с V1
+  comparison.md      сравнение V1/V2 с полным текстом вердикта V2
+```
+
+`log.json` пишет скрипт; остальные файлы — Секретарь. Одна мысль живёт в одном файле: `case.md` не дублирует вердикт, отчёт не пересказывает стенограмму, сравнение не пересказывает стенограммы. Отсутствующий материал помечается явным маркером, а не заменяется реконструкцией. Версия V1 не перезаписывается: её хеши фиксируются на контрольной точке и проверяются в `verify --hearing 2`.
+
+## Проверка регламента
+
+```powershell
+node scripts/tribunal.mjs status --case "cases\<id>"
+node scripts/tribunal.mjs verify --case "cases\<id>"
+node scripts/tribunal.mjs finalize --case "cases\<id>"
+
+# повторный суд
+node scripts/tribunal.mjs verify --case "cases\<id>" --hearing 2
+node scripts/tribunal.mjs finalize --case "cases\<id>" --hearing 2
+```
+
+`verify` для первого разбирательства проверяет:
+
+- общую длительность ≤ 780 с;
+- длительность каждой фазы;
+- число раундов ≤ 2;
+- наличие и минимальный размер обязательных артефактов;
+- наличие допустимого статуса вердикта;
+- наличие вердикта в отчёте.
+
+`verify --hearing 2` дополнительно проверяет:
+
+- собственные 780 с повторного суда и его фазы;
+- `idea-v2.md`, `reconstruction.md`, `transcript-v2.md`, `verdict-v2.md`, `comparison.md`;
+- статус вердикта V2 и обязательные разделы сравнения;
+- что реконструкция завершена и V2 утверждена **до** старта повторного суда;
+- что Прокурор, Адвокат и Судья повторного суда — отдельные записанные сессии;
+- что V1-артефакты не изменились после контрольной точки (`v1_immutable`).
+
+Результат пишется в `log.json`. Если проверка не пройдена, дело получает статус `completed_with_violations` (или `completed_stage2_with_violations`), а нарушения перечисляются в отчёте.
+
+## Структура проекта
+
+```text
+agents/dsh-ai-tribunal/   bundle: один preset AI Tribunal + tribunal-spawn + tribunal-guard
+config/                   лимиты, статусы вердикта, артефакты этапа 2
+docs/protocol.md          протокол процесса и форматы (этапы 1–2)
+prompts/roles/            уставы шести ролей: secretary, prosecutor, defense, judge, architect, auditor
+prompts/trial-idea.md     идея и контекст для приёмочного прогона
+scripts/tribunal.mjs      часы, ledger, контрольная точка, реконструкция, повторный суд, verify
+tests/guard.test.mjs      проверка read-only guard и состава ролей
+tests/stage2.test.mjs     сквозной тест этапа 2 на синтетическом деле
+cases/                    материалы дел
+```
+
+Проверка проекта:
+
+```powershell
+npm test        # часы + guard + этап 2
+```
+
+## Границы этапов 1–2
+
+В этапы 1–2 **не входят** HTML-отчёт, база данных, frontend, Docker и собственный агентный фреймворк. Используются штатные механизмы DSH — agent preset, subagent-сессии, tool/guard API — плюс два тонких project-плагина: `tribunal-spawn` и `tribunal-guard`. Этап 2 не добавляет постоянных агентов: Архитектор и Аудитор — временные subagent-сессии, а повторный суд использует те же три судебные роли в новых сессиях.
+
+## Ограничения
+
+- DSH Desktop на Windows; PowerShell 7 и Node.js 20+.
+- Роли Прокурора, Адвоката, Судьи, Архитектора и Аудитора не имеют доступа к записи файлов; их тексты сохраняет Секретарь.
+- Внешние источники (`web_search` / `web_fetch`) доступны сторонам и Судье, но не обязательны. Если источник не проверен, утверждение должно быть помечено как непроверенное.
+- Вердикт — не юридическое заключение и не гарантия осуществимости идеи; он оценивает только материалы дела.

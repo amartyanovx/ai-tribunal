@@ -1,0 +1,16 @@
+{
+  "name": "@local/dsh-ai-tribunal",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "AI Tribunal stages 1-2: one AI Tribunal preset, project-owned roles, read-only role guard, temporary reconstruction roles.",
+  "exports": {
+    "./tribunal-spawn-v3": "./tribunal-spawn-v3.js",
+    "./tribunal-guard": "./tribunal-guard.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

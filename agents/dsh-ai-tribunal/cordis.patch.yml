@@ -1,0 +1,59 @@
+# AI Tribunal stage-1 preset.
+#
+# One user-facing preset. The Secretary, Prosecutor, Defense and Judge are
+# subagent sessions under this same preset; the project owns every role
+# prompt. `tribunal-spawn` starts a role child and marks it; `tribunal-guard`
+# denies write, shell and spawn tools for exactly those marked sessions.
+# No service-role presets are declared, so the preset menu contains only
+# "AI Tribunal".
+- insert:
+    - id: preset-tribunal-secretary
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: tribunal-secretary
+        name: AI Tribunal
+        description: Состязательная экспертиза идей — Секретарь ведёт дело, стороны и Судья работают в изолированных subagent-сессиях.
+        order: 5
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: |
+                Ты — агент AI Tribunal. Если в задаче явно названа роль (Прокурор, Адвокат, Судья, Архитектор реконструкции или Аудитор реконструкции), следуй ей и прочитай указанный файл роли. Иначе ты Секретарь: первым действием прочитай prompts/roles/secretary.md и работай по нему. Не выходи за рамки своей роли.
+          - id: time-context
+            name: '@deepseek-ai/dsh-time-context'
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+            config:
+              applyPatch: false
+          - id: tool-fs-search
+            name: '@deepseek-ai/dsh-tool-fs-search'
+            config:
+              sampleOverCapGlobResults: false
+          - id: tool-bash
+            name: '@deepseek-ai/dsh-tool-bash'
+            disabled: !!js process.platform === 'win32'
+          - id: tool-pwsh
+            name: '@deepseek-ai/dsh-tool-pwsh'
+            disabled: !!js process.platform !== 'win32'
+          - id: tool-web
+            name: '@deepseek-ai/dsh-tool-web'
+            config:
+              fetch: true
+              searchTimeoutMs: 60000
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: tool-todo
+            name: '@deepseek-ai/dsh-tool-todo'
+            config:
+              allowParallelInProgress: true
+          - id: tool-present
+            name: '@deepseek-ai/dsh-tool-present'
+          - id: tool-subagent-control
+            name: '@deepseek-ai/dsh-tool-subagent-control'
+            config:
+              interrupt: true
+          - id: tribunal-spawn
+            name: '@local/dsh-ai-tribunal/tribunal-spawn-v3'
+          - id: tribunal-guard
+            name: '@local/dsh-ai-tribunal/tribunal-guard'
