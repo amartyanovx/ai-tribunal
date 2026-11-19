@@ -1,0 +1,60 @@
+{
+  "$comment": "Single source of truth for the AI Tribunal procedure. Limits are per hearing: stage-1 and the stage-2 retrial each get totalSeconds. Reconstruction runs outside any hearing clock and is not limited by totalSeconds.",
+  "version": 2,
+  "limits": {
+    "totalSeconds": 780,
+    "preparationSeconds": 240,
+    "debateSeconds": 300,
+    "verdictSeconds": 240,
+    "maxDebateRounds": 2,
+    "minSecondRoundRemainingSeconds": 90,
+    "intakeTargetSeconds": 60,
+    "minAgentWaitMs": 10000
+  },
+  "paths": {
+    "cases": "cases",
+    "prompts": "prompts"
+  },
+  "roles": {
+    "secretary": "secretary",
+    "prosecutor": "prosecutor",
+    "defense": "defense",
+    "judge": "judge",
+    "architect": "architect",
+    "auditor": "auditor"
+  },
+  "artifacts": {
+    "caseDoc": "case.md",
+    "transcript": "transcript.md",
+    "verdict": "verdict.md",
+    "report": "report.md",
+    "log": "log.json"
+  },
+  "stage2": {
+    "enabled": true,
+    "verdictMaxWords": 1200,
+    "artifacts": {
+      "ideaV2": "idea-v2.md",
+      "reconstruction": "reconstruction.md",
+      "transcriptV2": "transcript-v2.md",
+      "verdictV2": "verdict-v2.md",
+      "comparison": "comparison.md"
+    },
+    "comparisonSections": [
+      "Что улучшилось",
+      "Какие проблемы сохранились",
+      "Какие проблемы появились",
+      "Какой вариант предпочтительнее"
+    ]
+  },
+  "verdictStatuses": [
+    "ОДОБРИТЬ",
+    "ОДОБРИТЬ С УСЛОВИЯМИ",
+    "ОТКЛОНИТЬ",
+    "НЕДОСТАТОЧНО ДАННЫХ"
+  ],
+  "verification": {
+    "toleranceSeconds": 5,
+    "minArtifactBytes": 80
+  }
+}

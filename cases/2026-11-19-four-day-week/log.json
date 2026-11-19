@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "case": {
+    "schemaVersion": 2,
+    "id": "2026-11-19-four-day-week",
+    "slug": "four-day-week",
+    "title": "Перевод 40 инженеров на четырёхдневную рабочую неделю с сохранением зарплаты на 6 месяцев",
+    "status": "completed",
+    "createdAt": "2026-11-19T19:06:12.354Z",
+    "startedAt": "2026-11-19T19:06:12.354Z",
+    "completedAt": "2026-11-19T19:11:11.396Z",
+    "limits": {
+      "totalSeconds": 780,
+      "preparationSeconds": 240,
+      "debateSeconds": 300,
+      "verdictSeconds": 240,
+      "maxDebateRounds": 2,
+      "minSecondRoundRemainingSeconds": 90,
+      "intakeTargetSeconds": 60,
+      "minAgentWaitMs": 10000
+    },
+    "roles": {
+      "secretary": "tribunal-secretary",
+      "prosecutor": "tribunal-prosecutor",
+      "defense": "tribunal-defense",
+      "judge": "tribunal-judge"
+    },
+    "outcome": {
+      "verdictStatus": "ОДОБРИТЬ С УСЛОВИЯМИ",
+      "rounds": 2,
+      "missing": [],
+      "violations": []
+    }
+  },
+  "schedule": {
+    "startedAt": "2026-11-19T19:06:12.354Z",
+    "totalDeadline": "2026-11-19T19:19:12.354Z",
+    "phases": {
+      "preparation": {
+        "maxSeconds": 240,
+        "deadline": "2026-11-19T19:10:12.354Z",
+        "startedAt": "2026-11-19T19:06:24.803Z",
+        "endedAt": "2026-11-19T19:07:40.109Z",
+        "status": "completed"
+      },
+      "debate": {
+        "maxSeconds": 300,
+        "deadline": "2026-11-19T19:12:40.169Z",
+        "startedAt": "2026-11-19T19:07:40.169Z",
+        "endedAt": "2026-11-19T19:09:09.309Z",
+        "status": "completed"
+      },
+      "verdict": {
+        "maxSeconds": 240,
+        "deadline": "2026-11-19T19:13:09.369Z",
+        "startedAt": "2026-11-19T19:09:09.369Z",
+        "endedAt": "2026-11-19T19:10:18.370Z",
+        "status": "completed"
+      }
+    },
+    "limits": {
+      "totalSeconds": 780,
+      "preparationSeconds": 240,
+      "debateSeconds": 300,
+      "verdictSeconds": 240,
+      "maxDebateRounds": 2,
+      "minSecondRoundRemainingSeconds": 90,
+      "intakeTargetSeconds": 60,
+      "minAgentWaitMs": 10000
+    }
+  },
+  "events": [
+    {
+      "at": "2026-11-19T19:06:12.355Z",
+      "type": "case_created",
+      "caseId": "2026-11-19-four-day-week",
+      "title": "Перевод 40 инженеров на четырёхдневную рабочую неделю с сохранением зарплаты на 6 месяцев"
+    },
+    {
+      "at": "2026-11-19T19:06:12.355Z",
+      "type": "clock_started",
+      "startedAt": "2026-11-19T19:06:12.354Z",
+      "totalDeadline": "2026-11-19T19:19:12.354Z"
+    },
+    {
+      "at": "2026-11-19T19:06:24.803Z",
+      "type": "phase_started",
+      "phase": "preparation",
+      "startedAt": "2026-11-19T19:06:24.803Z",
+      "deadline": "2026-11-19T19:10:12.354Z"
+    },
+    {
+      "at": "2026-11-19T19:07:40.110Z",
+      "type": "phase_ended",
+      "phase": "preparation",
+      "endedAt": "2026-11-19T19:07:40.109Z",
+      "durationSeconds": 75,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T19:10:12.354Z"
+    },
+    {
+      "at": "2026-11-19T19:07:40.170Z",
+      "type": "phase_started",
+      "phase": "debate",
+      "startedAt": "2026-11-19T19:07:40.169Z",
+      "deadline": "2026-11-19T19:12:40.169Z"
+    },
+    {
+      "at": "2026-11-19T19:08:33.090Z",
+      "type": "debate_round",
+      "round": 1
+    },
+    {
+      "at": "2026-11-19T19:09:09.267Z",
+      "type": "debate_round",
+      "round": 2
+    },
+    {
+      "at": "2026-11-19T19:09:09.310Z",
+      "type": "phase_ended",
+      "phase": "debate",
+      "endedAt": "2026-11-19T19:09:09.309Z",
+      "durationSeconds": 89,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T19:12:40.169Z"
+    },
+    {
+      "at": "2026-11-19T19:09:09.370Z",
+      "type": "phase_started",
+      "phase": "verdict",
+      "startedAt": "2026-11-19T19:09:09.369Z",
+      "deadline": "2026-11-19T19:13:09.369Z"
+    },
+    {
+      "at": "2026-11-19T19:10:18.371Z",
+      "type": "phase_ended",
+      "phase": "verdict",
+      "endedAt": "2026-11-19T19:10:18.370Z",
+      "durationSeconds": 69,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-19T19:13:09.369Z"
+    },
+    {
+      "at": "2026-11-19T19:10:47.309Z",
+      "type": "case_finalized",
+      "status": "completed_with_violations",
+      "verificationOk": false
+    },
+    {
+      "at": "2026-11-19T19:11:09.974Z",
+      "type": "case_finalized",
+      "status": "completed",
+      "verificationOk": true
+    },
+    {
+      "at": "2026-11-19T19:11:11.397Z",
+      "type": "case_finalized",
+      "status": "completed",
+      "verificationOk": true
+    }
+  ],
+  "verification": {
+    "ok": true,
+    "verifiedAt": "2026-11-19T20:08:40.485Z",
+    "caseId": "2026-11-19-four-day-week",
+    "checks": [
+      {
+        "name": "total_duration",
+        "ok": true,
+        "detail": "299s from case creation (limit 780s)"
+      },
+      {
+        "name": "preparation_duration",
+        "ok": true,
+        "detail": "preparation 75s (limit 240s)"
+      },
+      {
+        "name": "debate_duration",
+        "ok": true,
+        "detail": "debate 89s (limit 300s)"
+      },
+      {
+        "name": "verdict_duration",
+        "ok": true,
+        "detail": "verdict 69s (limit 240s)"
+      },
+      {
+        "name": "preparation_deadline",
+        "ok": true,
+        "detail": "preparation ended 152s before its deadline"
+      },
+      {
+        "name": "debate_deadline",
+        "ok": true,
+        "detail": "debate ended 211s before its deadline"
+      },
+      {
+        "name": "verdict_deadline",
+        "ok": true,
+        "detail": "verdict ended 171s before its deadline"
+      },
+      {
+        "name": "debate_rounds",
+        "ok": true,
+        "detail": "2 round(s) (limit 2)"
+      },
+      {
+        "name": "artifact:case.md",
+        "ok": true,
+        "detail": "9506 bytes"
+      },
+      {
+        "name": "artifact:transcript.md",
+        "ok": true,
+        "detail": "88611 bytes"
+      },
+      {
+        "name": "artifact:verdict.md",
+        "ok": true,
+        "detail": "21112 bytes"
+      },
+      {
+        "name": "artifact:report.md",
+        "ok": true,
+        "detail": "31629 bytes"
+      },
+      {
+        "name": "verdict_status",
+        "ok": true,
+        "detail": "status: ОДОБРИТЬ С УСЛОВИЯМИ"
+      },
+      {
+        "name": "report_contains_verdict_status",
+        "ok": true,
+        "detail": "report must quote the verdict status"
+      },
+      {
+        "name": "report_has_verdict_section",
+        "ok": true,
+        "detail": "report must contain a \"## Вердикт\" or \"## N. Вердикт\" section"
+      }
+    ]
+  }
+}

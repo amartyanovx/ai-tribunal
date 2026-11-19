@@ -52,3 +52,10 @@ tmp/
 # Data sets and generated artifacts are versioned separately when needed
 # data/
 # outputs/
+
+# Local probe artifacts
+.tmp/
+tool-probe.txt
+depth-probe*.txt
+schedule-probe.txt
+launcher-secretary-answer.md
