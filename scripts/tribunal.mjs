@@ -23,6 +23,7 @@
  *   status      --case <dir>
  *   verify      --case <dir> [--hearing 1|2]
  *   finalize    --case <dir> [--hearing 1|2]
+ *   report-html --case <dir>
  *   selftest
  *
  * Reconstruction runs outside every hearing clock: hearing 2 starts only after
@@ -33,6 +34,7 @@ import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { generateVerdictReport } from './report/index.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CONFIG_PATH = path.join(ROOT, 'config', 'tribunal.config.json')
@@ -1255,6 +1257,22 @@ function cmdFinalize() {
   }, null, 2))
 }
 
+function cmdReportHtml() {
+  const caseDir = resolveCase(args.case)
+  try {
+    const result = generateVerdictReport({ caseDir, config })
+    console.log(JSON.stringify({
+      ...result,
+      file: path.relative(ROOT, result.file).split(path.sep).join('/'),
+      caseDir: path.relative(ROOT, result.caseDir).split(path.sep).join('/'),
+      warningCount: result.warnings.length,
+      warningMessages: result.warnings.map((warning) => warning.message),
+    }, null, 2))
+  } catch (error) {
+    fail(`report-html failed: ${error instanceof Error ? error.message : String(error)}`)
+  }
+}
+
 function cmdSelftest() {
   const { totalSeconds, preparationSeconds, debateSeconds, verdictSeconds, maxDebateRounds } = config.limits
   const stage1Artifacts = Object.values(config.artifacts)
@@ -1283,6 +1301,21 @@ function cmdSelftest() {
       ok: Boolean(config.roles?.architect) && Boolean(config.roles?.auditor),
       detail: `${config.roles?.architect ?? 'missing'} / ${config.roles?.auditor ?? 'missing'}`,
     },
+    {
+      name: 'stage3_enabled',
+      ok: config.stage3?.enabled === true,
+      detail: String(config.stage3?.enabled),
+    },
+    {
+      name: 'stage3_artifact',
+      ok: /^[\w.-]+\.html$/i.test(config.stage3?.artifact ?? ''),
+      detail: config.stage3?.artifact ?? 'missing',
+    },
+    {
+      name: 'stage3_generator',
+      ok: fs.existsSync(path.join(ROOT, 'scripts', 'report', 'index.mjs')),
+      detail: 'scripts/report/index.mjs',
+    },
   ]
   const ok = checks.every((check) => check.ok)
   console.log(JSON.stringify({ ok, root: ROOT, checks }, null, 2))
@@ -1302,7 +1335,8 @@ switch (command) {
   case 'status': cmdStatus(); break
   case 'verify': cmdVerify(); break
   case 'finalize': cmdFinalize(); break
+  case 'report-html': cmdReportHtml(); break
   case 'selftest': cmdSelftest(); break
   default:
-    fail(`unknown command: ${command ?? '(none)'}. Use init|begin|end|deadline|round|checkpoint|reconstruct|approval|event|status|verify|finalize|selftest`)
+    fail(`unknown command: ${command ?? '(none)'}. Use init|begin|end|deadline|round|checkpoint|reconstruct|approval|event|status|verify|finalize|report-html|selftest`)
 }

@@ -1,13 +1,14 @@
 {
   "name": "ai-tribunal",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "AI Tribunal: adversarial multi-agent idea review and stage-2 reconstruction on DeepSeek Harness.",
+  "description": "AI Tribunal: adversarial multi-agent idea review, stage-2 reconstruction and retrial, and a standalone stage-3 HTML verdict report on DeepSeek Harness.",
   "scripts": {
-    "test": "node scripts/tribunal.mjs selftest && node tests/guard.test.mjs && node tests/stage2.test.mjs",
+    "test": "node scripts/tribunal.mjs selftest && node tests/guard.test.mjs && node tests/stage2.test.mjs && node tests/stage3.test.mjs",
     "clock:selftest": "node scripts/tribunal.mjs selftest",
     "guard:test": "node tests/guard.test.mjs",
-    "stage2:test": "node tests/stage2.test.mjs"
+    "stage2:test": "node tests/stage2.test.mjs",
+    "stage3:test": "node tests/stage3.test.mjs"
   }
 }

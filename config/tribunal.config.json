@@ -1,6 +1,6 @@
 {
-  "$comment": "Single source of truth for the AI Tribunal procedure. Limits are per hearing: stage-1 and the stage-2 retrial each get totalSeconds. Reconstruction runs outside any hearing clock and is not limited by totalSeconds.",
-  "version": 2,
+  "$comment": "Single source of truth for the AI Tribunal procedure. Limits are per hearing: stage-1 and the stage-2 retrial each get totalSeconds. Reconstruction runs outside any hearing clock and is not limited by totalSeconds. Stage 3 is a derived, offline HTML report; it never affects deadlines or verification.",
+  "version": 3,
   "limits": {
     "totalSeconds": 780,
     "preparationSeconds": 240,
@@ -46,6 +46,12 @@
       "Какие проблемы появились",
       "Какой вариант предпочтительнее"
     ]
+  },
+  "stage3": {
+    "enabled": true,
+    "artifact": "verdict.html",
+    "generatorVersion": "1.0.0",
+    "maxSourceBytes": 8388608
   },
   "verdictStatuses": [
     "ОДОБРИТЬ",
