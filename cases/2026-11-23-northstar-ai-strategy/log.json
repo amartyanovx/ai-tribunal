@@ -1,0 +1,646 @@
+{
+  "schemaVersion": 2,
+  "case": {
+    "schemaVersion": 2,
+    "id": "2026-11-23-northstar-ai-strategy",
+    "slug": "northstar-ai-strategy",
+    "title": "Выбор AI-стратегии Northstar Flow",
+    "status": "completed_stage2",
+    "createdAt": "2026-11-23T18:08:49.953Z",
+    "startedAt": "2026-11-23T18:08:49.953Z",
+    "completedAt": "2026-11-23T18:14:10.599Z",
+    "limits": {
+      "totalSeconds": 780,
+      "preparationSeconds": 240,
+      "debateSeconds": 300,
+      "verdictSeconds": 240,
+      "maxDebateRounds": 2,
+      "minSecondRoundRemainingSeconds": 90,
+      "intakeTargetSeconds": 60,
+      "minAgentWaitMs": 10000
+    },
+    "roles": {
+      "secretary": "secretary",
+      "prosecutor": "prosecutor",
+      "defense": "defense",
+      "judge": "judge",
+      "architect": "architect",
+      "auditor": "auditor"
+    },
+    "outcome": {
+      "verdictStatus": "ОДОБРИТЬ С УСЛОВИЯМИ",
+      "rounds": 2,
+      "missing": [],
+      "violations": [],
+      "timedOut": false
+    }
+  },
+  "schedule": {
+    "startedAt": "2026-11-23T18:08:49.953Z",
+    "totalDeadline": "2026-11-23T18:21:49.953Z",
+    "phases": {
+      "preparation": {
+        "maxSeconds": 240,
+        "deadline": "2026-11-23T18:12:49.953Z",
+        "startedAt": "2026-11-23T18:09:10.623Z",
+        "endedAt": "2026-11-23T18:10:48.501Z",
+        "status": "completed"
+      },
+      "debate": {
+        "maxSeconds": 300,
+        "deadline": "2026-11-23T18:15:48.547Z",
+        "startedAt": "2026-11-23T18:10:48.547Z",
+        "endedAt": "2026-11-23T18:12:39.095Z",
+        "status": "completed"
+      },
+      "verdict": {
+        "maxSeconds": 240,
+        "deadline": "2026-11-23T18:16:39.145Z",
+        "startedAt": "2026-11-23T18:12:39.145Z",
+        "endedAt": "2026-11-23T18:13:44.258Z",
+        "status": "completed"
+      }
+    },
+    "limits": {
+      "totalSeconds": 780,
+      "preparationSeconds": 240,
+      "debateSeconds": 300,
+      "verdictSeconds": 240,
+      "maxDebateRounds": 2,
+      "minSecondRoundRemainingSeconds": 90,
+      "intakeTargetSeconds": 60,
+      "minAgentWaitMs": 10000
+    }
+  },
+  "events": [
+    {
+      "at": "2026-11-23T18:08:49.953Z",
+      "type": "case_created",
+      "caseId": "2026-11-23-northstar-ai-strategy",
+      "title": "Выбор AI-стратегии Northstar Flow"
+    },
+    {
+      "at": "2026-11-23T18:08:49.953Z",
+      "type": "clock_started",
+      "startedAt": "2026-11-23T18:08:49.953Z",
+      "totalDeadline": "2026-11-23T18:21:49.953Z"
+    },
+    {
+      "at": "2026-11-23T18:09:10.624Z",
+      "type": "phase_started",
+      "phase": "preparation",
+      "startedAt": "2026-11-23T18:09:10.623Z",
+      "deadline": "2026-11-23T18:12:49.953Z"
+    },
+    {
+      "at": "2026-11-23T18:10:48.502Z",
+      "type": "phase_ended",
+      "phase": "preparation",
+      "endedAt": "2026-11-23T18:10:48.501Z",
+      "durationSeconds": 98,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-23T18:12:49.953Z"
+    },
+    {
+      "at": "2026-11-23T18:10:48.548Z",
+      "type": "phase_started",
+      "phase": "debate",
+      "startedAt": "2026-11-23T18:10:48.547Z",
+      "deadline": "2026-11-23T18:15:48.547Z"
+    },
+    {
+      "at": "2026-11-23T18:11:48.988Z",
+      "type": "debate_round",
+      "round": 1
+    },
+    {
+      "at": "2026-11-23T18:12:39.047Z",
+      "type": "debate_round",
+      "round": 2
+    },
+    {
+      "at": "2026-11-23T18:12:39.096Z",
+      "type": "phase_ended",
+      "phase": "debate",
+      "endedAt": "2026-11-23T18:12:39.095Z",
+      "durationSeconds": 111,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-23T18:15:48.547Z"
+    },
+    {
+      "at": "2026-11-23T18:12:39.146Z",
+      "type": "phase_started",
+      "phase": "verdict",
+      "startedAt": "2026-11-23T18:12:39.145Z",
+      "deadline": "2026-11-23T18:16:39.145Z"
+    },
+    {
+      "at": "2026-11-23T18:13:44.260Z",
+      "type": "phase_ended",
+      "phase": "verdict",
+      "endedAt": "2026-11-23T18:13:44.258Z",
+      "durationSeconds": 65,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-23T18:16:39.145Z"
+    },
+    {
+      "at": "2026-11-23T18:14:10.600Z",
+      "type": "case_finalized",
+      "status": "completed",
+      "verificationOk": true,
+      "timedOut": false,
+      "hearing": 1
+    },
+    {
+      "at": "2026-11-23T18:14:25.706Z",
+      "type": "stage2_checkpoint_offered",
+      "offeredAt": "2026-11-23T18:14:25.706Z"
+    },
+    {
+      "at": "2026-11-23T18:16:35.088Z",
+      "type": "stage2_reconstruction_requested",
+      "decision": "reconstruct",
+      "userInput": {
+        "goals": "пользователь не уточнил",
+        "constraints": "пользователь не уточнил",
+        "note": "Запустить реконструкцию (Recommended). Дополнительных целей и ограничений не добавлено.",
+        "emulated": false
+      }
+    },
+    {
+      "at": "2026-11-23T18:16:35.132Z",
+      "type": "stage2_reconstruction_started",
+      "startedAt": "2026-11-23T18:16:35.131Z"
+    },
+    {
+      "at": "2026-11-23T18:16:41.140Z",
+      "type": "agent_started",
+      "role": "architect",
+      "agent": "architect"
+    },
+    {
+      "at": "2026-11-23T18:18:33.668Z",
+      "type": "agent_started",
+      "role": "auditor",
+      "agent": "auditor"
+    },
+    {
+      "at": "2026-11-23T18:22:44.908Z",
+      "type": "stage2_reconstruction_ended",
+      "endedAt": "2026-11-23T18:22:44.908Z",
+      "status": "completed",
+      "durationSeconds": 370
+    },
+    {
+      "at": "2026-11-23T18:26:06.371Z",
+      "type": "stage2_v2_approved",
+      "emulated": false,
+      "revisions": 0
+    },
+    {
+      "at": "2026-11-23T18:26:06.422Z",
+      "type": "stage2_hearing_started",
+      "hearing": 2,
+      "startedAt": "2026-11-23T18:26:06.421Z",
+      "totalDeadline": "2026-11-23T18:39:06.421Z"
+    },
+    {
+      "at": "2026-11-23T18:26:06.422Z",
+      "type": "retrial_phase_started",
+      "phase": "preparation",
+      "startedAt": "2026-11-23T18:26:06.422Z",
+      "deadline": "2026-11-23T18:30:06.421Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-23T18:27:15.214Z",
+      "type": "agent_started",
+      "hearing": 2,
+      "role": "prosecutor",
+      "agent": "prosecutor-v2"
+    },
+    {
+      "at": "2026-11-23T18:27:15.261Z",
+      "type": "agent_started",
+      "hearing": 2,
+      "role": "defense",
+      "agent": "defense-v2"
+    },
+    {
+      "at": "2026-11-23T18:27:51.943Z",
+      "type": "retrial_phase_ended",
+      "phase": "preparation",
+      "endedAt": "2026-11-23T18:27:51.942Z",
+      "durationSeconds": 106,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-23T18:30:06.421Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-23T18:27:51.990Z",
+      "type": "retrial_phase_started",
+      "phase": "debate",
+      "startedAt": "2026-11-23T18:27:51.989Z",
+      "deadline": "2026-11-23T18:32:51.989Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-23T18:28:46.508Z",
+      "type": "retrial_debate_round",
+      "round": 1,
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-23T18:29:35.357Z",
+      "type": "retrial_debate_round",
+      "round": 2,
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-23T18:29:35.407Z",
+      "type": "retrial_phase_ended",
+      "phase": "debate",
+      "endedAt": "2026-11-23T18:29:35.406Z",
+      "durationSeconds": 103,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-23T18:32:51.989Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-23T18:29:35.451Z",
+      "type": "retrial_phase_started",
+      "phase": "verdict",
+      "startedAt": "2026-11-23T18:29:35.450Z",
+      "deadline": "2026-11-23T18:33:35.450Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-23T18:29:41.215Z",
+      "type": "agent_started",
+      "hearing": 2,
+      "role": "judge",
+      "agent": "judge-v2"
+    },
+    {
+      "at": "2026-11-23T18:30:38.640Z",
+      "type": "retrial_phase_ended",
+      "phase": "verdict",
+      "endedAt": "2026-11-23T18:30:38.639Z",
+      "durationSeconds": 63,
+      "status": "completed",
+      "overdue": false,
+      "deadline": "2026-11-23T18:33:35.450Z",
+      "hearing": 2
+    },
+    {
+      "at": "2026-11-23T18:31:04.960Z",
+      "type": "case_finalized",
+      "status": "completed_stage2",
+      "verificationOk": true,
+      "timedOut": false,
+      "hearing": 2
+    }
+  ],
+  "verification": {
+    "ok": true,
+    "verifiedAt": "2026-11-23T18:14:16.017Z",
+    "caseId": "2026-11-23-northstar-ai-strategy",
+    "hearing": 1,
+    "checks": [
+      {
+        "name": "total_duration",
+        "ok": true,
+        "detail": "321s from case creation (limit 780s)"
+      },
+      {
+        "name": "preparation_duration",
+        "ok": true,
+        "detail": "preparation 98s (limit 240s)"
+      },
+      {
+        "name": "debate_duration",
+        "ok": true,
+        "detail": "debate 111s (limit 300s)"
+      },
+      {
+        "name": "verdict_duration",
+        "ok": true,
+        "detail": "verdict 65s (limit 240s)"
+      },
+      {
+        "name": "preparation_deadline",
+        "ok": true,
+        "detail": "preparation ended 121s before its deadline"
+      },
+      {
+        "name": "debate_deadline",
+        "ok": true,
+        "detail": "debate ended 189s before its deadline"
+      },
+      {
+        "name": "verdict_deadline",
+        "ok": true,
+        "detail": "verdict ended 175s before its deadline"
+      },
+      {
+        "name": "debate_rounds",
+        "ok": true,
+        "detail": "2 round(s) (limit 2)"
+      },
+      {
+        "name": "timeout_missing_materials",
+        "ok": true,
+        "detail": "no timed-out phase"
+      },
+      {
+        "name": "artifact:case.md",
+        "ok": true,
+        "detail": "21607 bytes"
+      },
+      {
+        "name": "artifact:transcript.md",
+        "ok": true,
+        "detail": "80464 bytes"
+      },
+      {
+        "name": "artifact:verdict.md",
+        "ok": true,
+        "detail": "12213 bytes"
+      },
+      {
+        "name": "artifact:report.md",
+        "ok": true,
+        "detail": "18018 bytes"
+      },
+      {
+        "name": "verdict_status",
+        "ok": true,
+        "detail": "status: ОДОБРИТЬ С УСЛОВИЯМИ"
+      },
+      {
+        "name": "report_contains_verdict_status",
+        "ok": true,
+        "detail": "report must quote the verdict status"
+      },
+      {
+        "name": "report_has_verdict_section",
+        "ok": true,
+        "detail": "report must contain a \"## Вердикт\" or \"## N. Вердикт\" section"
+      }
+    ]
+  },
+  "stage2": {
+    "status": "completed",
+    "checkpoint": {
+      "offeredAt": "2026-11-23T18:14:25.706Z",
+      "decision": "reconstruct",
+      "decidedAt": "2026-11-23T18:16:35.087Z",
+      "userInput": {
+        "goals": "пользователь не уточнил",
+        "constraints": "пользователь не уточнил",
+        "note": "Запустить реконструкцию (Recommended). Дополнительных целей и ограничений не добавлено.",
+        "emulated": false
+      },
+      "emulated": false
+    },
+    "baseline": {
+      "recordedAt": "2026-11-23T18:14:25.705Z",
+      "hashes": {
+        "case.md": "ef1f2b9580850b8a2f56f9a59deeac65d4e2f44e6324e04539cd9cafa995ed9c",
+        "transcript.md": "ed0cfd1e54f7d05c842ef4699d45a0c569519165dd310bdbfac5d13673d9ec78",
+        "verdict.md": "d8f9d76b63834b3facdbbda30722ec218d83cbe4fefcb21ec70bbc389ad41e57",
+        "report.md": "14830bfd2e70e8707d12830b78c5a02f960ebf57fff2065e92b6053dd1e200f6"
+      }
+    },
+    "reconstruction": {
+      "startedAt": "2026-11-23T18:16:35.131Z",
+      "endedAt": "2026-11-23T18:22:44.908Z",
+      "status": "completed",
+      "revisions": 0
+    },
+    "approval": {
+      "decisions": [
+        {
+          "at": "2026-11-23T18:26:06.371Z",
+          "decision": "approved",
+          "note": "Утвердить V2. Пункты 1 и 2 из §5 (политика предоплат; обязательность сохранения Kestrel) пользователем не уточнены.",
+          "emulated": false
+        }
+      ],
+      "approvedAt": "2026-11-23T18:26:06.371Z",
+      "revision": 0
+    },
+    "hearing": {
+      "number": 2,
+      "startedAt": "2026-11-23T18:26:06.421Z",
+      "totalDeadline": "2026-11-23T18:39:06.421Z",
+      "phases": {
+        "preparation": {
+          "maxSeconds": 240,
+          "deadline": "2026-11-23T18:30:06.421Z",
+          "startedAt": "2026-11-23T18:26:06.422Z",
+          "endedAt": "2026-11-23T18:27:51.942Z",
+          "status": "completed"
+        },
+        "debate": {
+          "maxSeconds": 300,
+          "deadline": "2026-11-23T18:32:51.989Z",
+          "startedAt": "2026-11-23T18:27:51.989Z",
+          "endedAt": "2026-11-23T18:29:35.406Z",
+          "status": "completed"
+        },
+        "verdict": {
+          "maxSeconds": 240,
+          "deadline": "2026-11-23T18:33:35.450Z",
+          "startedAt": "2026-11-23T18:29:35.450Z",
+          "endedAt": "2026-11-23T18:30:38.639Z",
+          "status": "completed"
+        }
+      },
+      "limits": {
+        "totalSeconds": 780,
+        "preparationSeconds": 240,
+        "debateSeconds": 300,
+        "verdictSeconds": 240,
+        "maxDebateRounds": 2,
+        "minSecondRoundRemainingSeconds": 90,
+        "intakeTargetSeconds": 60,
+        "minAgentWaitMs": 10000
+      },
+      "rounds": 2,
+      "completedAt": "2026-11-23T18:31:04.959Z"
+    },
+    "verdictStatus": "ОТКЛОНИТЬ",
+    "missing": [],
+    "timedOut": false,
+    "violations": [],
+    "verification": {
+      "ok": true,
+      "verifiedAt": "2026-11-23T18:31:04.912Z",
+      "caseId": "2026-11-23-northstar-ai-strategy",
+      "hearing": 2,
+      "checks": [
+        {
+          "name": "retrial_total_duration",
+          "ok": true,
+          "detail": "298s from retrial start (limit 780s)"
+        },
+        {
+          "name": "retrial_preparation_duration",
+          "ok": true,
+          "detail": "preparation 106s (limit 240s)"
+        },
+        {
+          "name": "retrial_preparation_deadline",
+          "ok": true,
+          "detail": "preparation ended 134s before its deadline"
+        },
+        {
+          "name": "retrial_debate_duration",
+          "ok": true,
+          "detail": "debate 103s (limit 300s)"
+        },
+        {
+          "name": "retrial_debate_deadline",
+          "ok": true,
+          "detail": "debate ended 197s before its deadline"
+        },
+        {
+          "name": "retrial_verdict_duration",
+          "ok": true,
+          "detail": "verdict 63s (limit 240s)"
+        },
+        {
+          "name": "retrial_verdict_deadline",
+          "ok": true,
+          "detail": "verdict ended 177s before its deadline"
+        },
+        {
+          "name": "retrial_debate_rounds",
+          "ok": true,
+          "detail": "2 round(s) (limit 2)"
+        },
+        {
+          "name": "retrial_timeout_missing_materials",
+          "ok": true,
+          "detail": "no timed-out phase"
+        },
+        {
+          "name": "stage2_artifact:idea-v2.md",
+          "ok": true,
+          "detail": "3639 bytes"
+        },
+        {
+          "name": "stage2_artifact:reconstruction.md",
+          "ok": true,
+          "detail": "56816 bytes"
+        },
+        {
+          "name": "stage2_artifact:transcript-v2.md",
+          "ok": true,
+          "detail": "65965 bytes"
+        },
+        {
+          "name": "stage2_artifact:verdict-v2.md",
+          "ok": true,
+          "detail": "13282 bytes"
+        },
+        {
+          "name": "stage2_artifact:comparison.md",
+          "ok": true,
+          "detail": "22101 bytes"
+        },
+        {
+          "name": "retrial_verdict_status",
+          "ok": true,
+          "detail": "status: ОТКЛОНИТЬ"
+        },
+        {
+          "name": "reconstruction_has_v2_concept",
+          "ok": true,
+          "detail": "reconstruction.md must contain \"## Итоговая концепция V2\""
+        },
+        {
+          "name": "idea_v2_has_heading",
+          "ok": true,
+          "detail": "idea-v2.md must start with a Markdown heading"
+        },
+        {
+          "name": "comparison_contains_verdict2_status",
+          "ok": true,
+          "detail": "comparison.md must quote the V2 verdict status"
+        },
+        {
+          "name": "comparison_mentions_v1_v2",
+          "ok": true,
+          "detail": "comparison.md must name both V1 and V2"
+        },
+        {
+          "name": "comparison_section:Что улучшилось",
+          "ok": true,
+          "detail": "comparison.md must contain the \"## Что улучшилось\" section"
+        },
+        {
+          "name": "comparison_section:Какие проблемы сохранились",
+          "ok": true,
+          "detail": "comparison.md must contain the \"## Какие проблемы сохранились\" section"
+        },
+        {
+          "name": "comparison_section:Какие проблемы появились",
+          "ok": true,
+          "detail": "comparison.md must contain the \"## Какие проблемы появились\" section"
+        },
+        {
+          "name": "comparison_section:Какой вариант предпочтительнее",
+          "ok": true,
+          "detail": "comparison.md must contain the \"## Какой вариант предпочтительнее\" section"
+        },
+        {
+          "name": "v1_immutable",
+          "ok": true,
+          "detail": "V1 artifacts unchanged since the checkpoint"
+        },
+        {
+          "name": "checkpoint_reconstruct",
+          "ok": true,
+          "detail": "checkpoint decision: reconstruct"
+        },
+        {
+          "name": "reconstruction_status_completed",
+          "ok": true,
+          "detail": "reconstruction status: completed"
+        },
+        {
+          "name": "approval_only_after_completed_reconstruction",
+          "ok": true,
+          "detail": "V2 approved after reconstruction status \"completed\""
+        },
+        {
+          "name": "reconstruction_before_retrial",
+          "ok": true,
+          "detail": "reconstruction ended 202s before the retrial"
+        },
+        {
+          "name": "v2_approved_before_retrial",
+          "ok": true,
+          "detail": "V2 approved 0s before the retrial"
+        },
+        {
+          "name": "retrial_roles_recorded",
+          "ok": true,
+          "detail": "roles recorded: prosecutor=prosecutor-v2, defense=defense-v2, judge=judge-v2"
+        },
+        {
+          "name": "retrial_roles_distinct",
+          "ok": true,
+          "detail": "sessions: prosecutor-v2, defense-v2, judge-v2"
+        }
+      ]
+    }
+  }
+}
